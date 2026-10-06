@@ -1,253 +1,227 @@
+<meta charset="utf-8">
 <title>フラット7 LINE導線マップ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
 <style>
-/* Layout: 上に「通知で届いた言葉」のボタン一覧と答え、下に段階ごとの全体設計図。ボタンを押すと設計図の該当段階が「いまここ」になる */
+/* Layout: 1カラム。①通知の言葉（開くと現在地と対応）②全体の流れ（5段階の横並び＋どの段階でもの2行）。色は状態を示す点と文字だけに使う */
 :root {
-  --bg: #F6F7F5;
+  --bg: #F5F6F4;
   --surface: #FFFFFF;
-  --ink: #1E2A2B;
-  --muted: #5B6866;
-  --line: #D9DEDB;
-  --accent: #1F6F63;
-  --auto-bg: #E2F1EA;  --auto-fg: #1E5A43;  --auto-bd: #3F8F6B;
-  --staff-bg: #FCEBD8; --staff-fg: #7A3E0C; --staff-bd: #C46A1C;
-  --store-bg: #E1EAF6; --store-fg: #1D3E6B; --store-bd: #3D6CB0;
-  --here: #D23F31;
+  --ink: #1F2726;
+  --muted: #66716F;
+  --line: #E1E5E2;
+  --accent: #23695E;
+  --ok: #2F8A5F;
+  --staff: #C2621B;
+  --store: #3563A8;
+  --track: #DCE2DF;
   --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   --font-body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141A1A; --surface: #1C2423; --ink: #E8EEEC; --muted: #A3B0AD; --line: #33403E; --accent: #6CC4B2;
-    --auto-bg: #1D3A2F; --auto-fg: #BFE8D3; --auto-bd: #4FA982;
-    --staff-bg: #43301C; --staff-fg: #FFD9B0; --staff-bd: #D9893E;
-    --store-bg: #1D2C44; --store-fg: #C9DBF6; --store-bd: #6B95D1;
-    --here: #FF7A6B;
+    --bg: #151B1A; --surface: #1D2524; --ink: #E7EDEB; --muted: #A0ADAA; --line: #2F3A38; --accent: #74C7B5;
+    --ok: #5CC28F; --staff: #F0A055; --store: #7FA6E6; --track: #33403D;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #141A1A; --surface: #1C2423; --ink: #E8EEEC; --muted: #A3B0AD; --line: #33403E; --accent: #6CC4B2;
-  --auto-bg: #1D3A2F; --auto-fg: #BFE8D3; --auto-bd: #4FA982;
-  --staff-bg: #43301C; --staff-fg: #FFD9B0; --staff-bd: #D9893E;
-  --store-bg: #1D2C44; --store-fg: #C9DBF6; --store-bd: #6B95D1;
-  --here: #FF7A6B;
+  --bg: #151B1A; --surface: #1D2524; --ink: #E7EDEB; --muted: #A0ADAA; --line: #2F3A38; --accent: #74C7B5;
+  --ok: #5CC28F; --staff: #F0A055; --store: #7FA6E6; --track: #33403D;
   color-scheme: dark;
 }
 body {
   background: var(--bg); color: var(--ink);
   font-family: var(--font-body); font-size: 17px; line-height: 1.7;
-  padding-inline: 16px; padding-block: 24px 56px;
+  padding-inline: 16px; padding-block: 28px 64px;
 }
-.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 36px; }
-h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
-h1 { font-size: 1.8rem; font-weight: 900; }
-h2 { font-size: 1.3rem; font-weight: 700; }
+.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 44px; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
+h1 { font-size: 1.75rem; font-weight: 900; }
+h2 { font-size: 1.2rem; font-weight: 700; }
 p { margin: 0; }
 section { display: grid; gap: 14px; }
-.sub { color: var(--muted); font-size: 0.95rem; }
+.lead { color: var(--muted); }
 
-.legend { display: flex; flex-wrap: wrap; gap: 8px; }
-.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 999px; border: 1.5px solid; font-weight: 700; font-size: 0.92rem; white-space: nowrap; }
-.pill.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.pill.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.pill.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
+/* 状態の表示（色の点＋文字） */
+.st { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+.st::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex: none; }
+.st.ok { color: var(--ok); }
+.st.staff { color: var(--staff); }
+.st.store { color: var(--store); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.legend .st { white-space: normal; }
 
-/* 通知で届いた言葉 */
-.words { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.word {
-  font: inherit; color: var(--ink); text-align: left; cursor: pointer;
-  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
-  padding: 12px 14px; display: grid; gap: 8px; min-width: 0;
+/* ① 通知の言葉 */
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.item + .item { border-top: 1px solid var(--line); }
+.item summary {
+  list-style: none; cursor: pointer;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; align-items: center; gap: 14px;
+  padding: 14px 18px;
 }
-.word:hover { border-color: var(--accent); }
-.word[aria-pressed="true"] { border-color: var(--here); box-shadow: 0 0 0 2px var(--here) inset; }
-.word q { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; quotes: "「" "」"; overflow-wrap: anywhere; }
-.word .kind { font-size: 0.85rem; color: var(--muted); }
+.item summary::-webkit-details-marker { display: none; }
+.item summary:hover { background: var(--bg); }
+.item .w { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; min-width: 0; overflow-wrap: anywhere; }
+.item .w small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.85rem; color: var(--muted); }
+.chev { width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); justify-self: center; margin-top: -4px; }
+.item[open] .chev { transform: rotate(-135deg); margin-top: 4px; }
+.item[open] summary { background: var(--bg); }
+.detail { padding: 4px 18px 18px; display: grid; gap: 14px; background: var(--bg); }
 
-.answer { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; }
-.answer .top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
-.answer .q { font-family: var(--font-display); font-weight: 900; font-size: 1.25rem; overflow-wrap: anywhere; }
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0; }
-.facts div { background: var(--bg); border-radius: 8px; padding: 10px 12px; min-width: 0; }
-.facts dt { font-size: 0.82rem; color: var(--muted); font-weight: 700; letter-spacing: 0.04em; }
-.facts dd { margin: 2px 0 0; }
+.where { display: grid; gap: 6px; }
+.where .label { font-size: 0.85rem; color: var(--muted); }
+.mini { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.mini span { height: 6px; border-radius: 3px; background: var(--track); }
+.mini span.on { background: var(--accent); }
+.mini.free span { background: var(--track); }
+.where b { font-family: var(--font-display); }
 
-/* 全体設計図 */
-.map { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
-@media (max-width: 860px) { .map { grid-template-columns: 1fr; } }
-.stage { position: relative; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
-.stage .no { font-family: var(--font-display); font-weight: 900; color: var(--accent); font-size: 0.9rem; letter-spacing: 0.06em; }
-.stage h3 { font-size: 1.08rem; }
-.stage .auto-box { background: var(--auto-bg); color: var(--auto-fg); border-radius: 8px; padding: 8px 10px; font-size: 0.93rem; }
-.stage .act { border-radius: 8px; padding: 8px 10px; font-size: 0.93rem; font-weight: 700; border: 1.5px solid; }
-.stage .act.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.stage .act.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.stage .act.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
-.stage .kw { display: flex; flex-wrap: wrap; gap: 6px; }
-.stage .kw span { font-size: 0.85rem; border: 1px solid var(--line); border-radius: 6px; padding: 1px 8px; background: var(--bg); }
-.stage.here { border-color: var(--here); box-shadow: 0 0 0 2px var(--here) inset; }
-.stage .badge { display: none; position: absolute; top: -12px; right: 12px; background: var(--here); color: #FFFFFF; font-weight: 700; font-size: 0.85rem; padding: 2px 10px; border-radius: 999px; }
-.stage.here .badge { display: inline-block; }
-.arrow { display: none; }
+.rows { display: grid; gap: 8px; margin: 0; }
+.rows div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 12px; }
+@media (max-width: 520px) { .rows div { grid-template-columns: 1fr; gap: 0; } }
+.rows dt { color: var(--muted); font-size: 0.9rem; }
+.rows dd { margin: 0; }
 
-.lanes { display: grid; gap: 10px; }
-.lane { border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border: 1.5px solid; }
-.lane.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.lane.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.lane.here { box-shadow: 0 0 0 3px var(--here); }
-.lane b { font-family: var(--font-display); }
-
-.who { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-.who div { border: 1.5px solid; border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; min-width: 0; }
-.who .staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.who .store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
-.who b { font-family: var(--font-display); }
-.who span { font-size: 0.93rem; }
-.foot { color: var(--muted); font-size: 0.9rem; }
+/* ② 全体の流れ */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; position: relative; }
+.flow li { display: grid; gap: 6px; align-content: start; padding: 0 8px; position: relative; text-align: center; }
+.flow li::before { content: ""; position: absolute; top: 17px; left: 0; right: 0; height: 2px; background: var(--track); z-index: 0; }
+.flow li:first-child::before { left: 50%; }
+.flow li:last-child::before { right: 50%; }
+.flow .dot { position: relative; z-index: 1; justify-self: center; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-weight: 900; font-variant-numeric: tabular-nums; }
+.flow .name { font-family: var(--font-display); font-weight: 700; line-height: 1.4; }
+.flow .does { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+.flow .st { justify-self: center; font-size: 0.88rem; white-space: normal; text-align: left; }
+@media (max-width: 900px) {
+  .flow { grid-template-columns: 1fr; gap: 18px; }
+  .flow li { grid-template-columns: 36px minmax(0, 1fr); text-align: left; column-gap: 14px; row-gap: 2px; padding: 0; }
+  .flow li::before { top: 36px; bottom: -18px; left: 17px; right: auto; width: 2px; height: auto; }
+  .flow li:first-child::before { left: 17px; }
+  .flow li:last-child::before { display: none; }
+  .flow .dot { grid-row: span 3; justify-self: start; }
+  .flow .st { justify-self: start; }
+}
+.always { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.always div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; padding: 14px 18px; }
+.always div + div { border-top: 1px solid var(--line); }
+.always b { font-family: var(--font-display); display: block; }
+.always span.s { font-size: 0.9rem; color: var(--muted); }
+.always .st { white-space: normal; }
+@media (max-width: 520px) { .always div { grid-template-columns: 1fr; } }
+.foot { color: var(--muted); font-size: 0.88rem; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-@media (prefers-reduced-motion: no-preference) { .stage, .word, .lane { transition: box-shadow .15s, border-color .15s; } }
 </style>
 
 <div class="wrap">
 
 <header style="display:grid;gap:12px">
   <h1>フラット7 LINE導線マップ</h1>
-  <p>通知で届いた言葉を押すと、そのお客様が下の設計図の<b>どこにいるか</b>と、<b>対応が要るか</b>が分かります。</p>
+  <p class="lead">通知で届いた言葉を開くと、そのお客様がいる段階と、対応が要るかどうかが分かります。</p>
   <div class="legend">
-    <span class="pill auto">対応不要（LINEが自動で返信済み）</span>
-    <span class="pill staff">スタッフが返信・電話</span>
-    <span class="pill store">店舗が予約を承認</span>
+    <span class="st ok">対応不要（LINEが自動で返信済み）</span>
+    <span class="st staff">スタッフが返信・電話</span>
+    <span class="st store">店舗が予約を承認</span>
   </div>
 </header>
 
 <section aria-labelledby="s-words">
-  <h2 id="s-words">通知で届いた言葉は？</h2>
-  <div class="words" id="words" role="group" aria-label="通知で届いた言葉"></div>
-  <div class="answer" id="answer" aria-live="polite"></div>
+  <h2 id="s-words">通知で届いた言葉</h2>
+  <div class="list" id="list"></div>
 </section>
 
-<section aria-labelledby="s-map">
-  <h2 id="s-map">全体設計図</h2>
-  <p class="sub">左から右へ進みます。四角の中の言葉は、その段階で通知に出てくる言葉です。</p>
-  <div class="map" id="map"></div>
-  <div class="lanes">
-    <div class="lane auto" id="lane-step"><b>どの段階でも</b><span>友だち追加から90日間、決まった日の17時に案内を自動配信（来店予約をした人には止まる）</span><span class="pill auto">対応不要</span></div>
-    <div class="lane staff" id="lane-free"><b>どの段階でも</b><span>お客様が自分で文章を書いて送ってきたとき（17時〜翌9時は一次返信を自動で送信済み）</span><span class="pill staff">返信する</span></div>
+<section aria-labelledby="s-flow">
+  <h2 id="s-flow">全体の流れ</h2>
+  <ol class="flow" id="flow"></ol>
+  <div class="always">
+    <div><p><b>どの段階でも：定期配信</b><span class="s">友だち追加から90日間、決まった日の17時に自動配信。来店予約をした人には止まる。</span></p><span class="st ok">対応不要</span></div>
+    <div><p><b>どの段階でも：お客様が自分で書いた文章</b><span class="s">定期配信でも「このトークに送ってください」と案内しているため届く。17時〜翌9時は一次返信を自動で送信済み。</span></p><span class="st staff">当日中に返信（17時以降は翌日中）</span></div>
   </div>
 </section>
 
-<section aria-labelledby="s-who">
-  <h2 id="s-who">スタッフの出番はこの4つだけ</h2>
-  <div class="who">
-    <div class="staff"><b>自分で書いた質問</b><span>当日中に返信（17時以降は翌日中）</span></div>
-    <div class="staff"><b>チャット相談フォーム</b><span>LINEで返信（翌日中）</span></div>
-    <div class="staff"><b>電話相談フォーム</b><span>お客様に電話</span></div>
-    <div class="store"><b>来店予約のリクエスト</b><span>当日中に承認</span></div>
-  </div>
-</section>
-
-<p class="foot">2026年10月6日のLステップ・LINE公式アカウントの設定をもとに作成。設定を変えたときは、この図も更新します。</p>
+<p class="foot">2026年10月6日にLステップとLINE公式アカウントの設定を確認して作成。設定を変えたときは、この図も更新します。</p>
 
 </div>
 
 <script>
-/* 段階（全体設計図） */
-var STAGES = [
-  { id: "s1", no: "STEP 1", name: "友だち追加",
-    auto: "あいさつと4つのボタン（合う車・月々いくら・買い方・スタッフに相談）を自動で送る",
-    act: ["auto", "対応不要"] },
-  { id: "s2", no: "STEP 2", name: "情報を見ている",
-    auto: "車の持ち方診断・店舗情報などの案内を自動で返す",
-    act: ["auto", "対応不要"] },
-  { id: "s3", no: "STEP 3", name: "診断・料金を調べている",
-    auto: "診断結果の車の案内と月額、「来店予約する／チャットで質問」のボタンを自動で返す",
-    act: ["auto", "対応不要"] },
-  { id: "s4", no: "STEP 4", name: "相談しようとしている",
-    auto: "チャットか電話かを選んでもらう。選ぶと、質問の受付やフォームを自動で返す",
-    act: ["staff", "質問・フォームが届いたら対応"] },
-  { id: "s5", no: "STEP 5", name: "来店予約",
-    auto: "予約カレンダーで申し込みを受け付け、90日間の配信を止める",
-    act: ["store", "リクエストを承認"] }
+var STEPS = [
+  { name: "友だち追加", does: "あいさつと4つのボタンを自動で送る", st: ["ok", "対応不要"] },
+  { name: "情報を見ている", does: "診断・料金・店舗の案内を自動で返す", st: ["ok", "対応不要"] },
+  { name: "診断結果を受け取った", does: "車の案内と月額、予約・質問のボタンを自動で返す", st: ["ok", "対応不要"] },
+  { name: "相談しようとしている", does: "チャットか電話かを選んでもらう", st: ["staff", "質問・フォームに対応"] },
+  { name: "来店予約", does: "予約リクエストを受け付け、定期配信を止める", st: ["store", "リクエストを承認"] }
 ];
 
-/* 通知で届いた言葉 → 現在地と対応 */
+/* step: 1〜5、0 は「どの段階でも」 */
 var WORDS = [
-  { w: "詳しく聞いてみたいです", stage: "s2", kind: "あいさつの比較画像を押した",
-    sent: "車の持ち方診断の案内", next: "診断を受ける・ボタンを押す", need: ["auto", "対応不要"] },
-  { w: "店舗情報", stage: "s2", kind: "メニューを押した",
-    sent: "3店舗の案内カード（住所など）", next: "来店・電話を検討", need: ["auto", "対応不要"] },
-  { w: "診断結果：タント など", stage: "s3", kind: "おすすめ車診断の結果を送った",
-    sent: "その車の案内と月額、来店予約・チャット質問のボタン", next: "来店予約か、チャットで質問", need: ["auto", "対応不要"] },
-  { w: "スタッフに相談したい", stage: "s4", kind: "あいさつのボタンを押した",
-    sent: "「チャットで質問する／電話で相談する」の選択", next: "どちらかを選ぶ", need: ["auto", "まだ対応不要"] },
-  { w: "チャットで質問する", stage: "s4", kind: "相談方法でチャットを選んだ",
-    sent: "「どういったお悩みでしょうか？」", next: "質問を書いて送ってくる", need: ["staff", "次に届く質問に返信"] },
-  { w: "チャットで質問", stage: "s4", kind: "診断結果のボタンを押した",
-    sent: "「このまま質問を送ってください」", next: "質問を書いて送ってくる", need: ["staff", "次に届く質問に返信"] },
-  { w: "電話で相談する", stage: "s4", kind: "相談方法で電話を選んだ",
-    sent: "電話相談フォーム", next: "フォームを送ってくる", need: ["staff", "フォームが届いたら電話"] },
-  { w: "相談フォームの回答", stage: "s4", kind: "チャット相談・電話相談フォームを送った",
-    sent: "受付済み（返信の目安を案内済み）", next: "スタッフの連絡を待っている", need: ["staff", "LINEで返信 or 電話"] },
-  { w: "来店予約", stage: "s5", kind: "予約の案内を求めた",
-    sent: "予約カレンダーの案内", next: "予約を申し込む", need: ["auto", "対応不要"] },
-  { w: "予約リクエスト", stage: "s5", kind: "予約カレンダーで申し込んだ",
-    sent: "受付（90日間の配信を停止）", next: "承認を待っている", need: ["store", "当日中に承認"] },
-  { w: "上のどれでもない文章", stage: "free", kind: "お客様が自分で書いた",
-    sent: "9〜17時：なし／17時〜翌9時：一次返信", next: "返事を待っている", need: ["staff", "当日中に返信（17時以降は翌日中）"] }
+  { w: "詳しく聞いてみたいです", why: "あいさつの比較画像を押した", step: 2,
+    sent: "車の持ち方診断の案内", next: "診断を受ける", st: ["ok", "対応不要"] },
+  { w: "店舗情報", why: "メニューの「店舗情報」を押した", step: 2,
+    sent: "3店舗の案内カード", next: "来店や電話を考える", st: ["ok", "対応不要"] },
+  { w: "診断結果：タント など", why: "おすすめ車診断の結果をトークに送った", step: 3,
+    sent: "その車の案内と月額、「来店予約する」「チャットで質問」のボタン", next: "予約するか、質問する", st: ["ok", "対応不要"] },
+  { w: "スタッフに相談したい", why: "あいさつの4つのボタンから押した", step: 4,
+    sent: "「チャットで質問する」「電話で相談する」の2択", next: "どちらかを選ぶ", st: ["ok", "まだ対応不要"] },
+  { w: "チャットで質問する", why: "相談方法でチャットを選んだ", step: 4,
+    sent: "「どういったお悩みでしょうか？」", next: "質問を書いて送ってくる", st: ["staff", "次に届く質問に返信"] },
+  { w: "チャットで質問", why: "診断結果のボタンを押した", step: 4,
+    sent: "「このまま質問を送ってください」", next: "質問を書いて送ってくる", st: ["staff", "次に届く質問に返信"] },
+  { w: "電話で相談する", why: "相談方法で電話を選んだ", step: 4,
+    sent: "電話相談フォーム（名前・電話番号・つながりやすい時間帯など）", next: "フォームを送ってくる", st: ["staff", "フォームが届いたら電話"] },
+  { w: "相談フォームの回答", why: "チャット相談・電話相談のフォームを送った", step: 4,
+    sent: "受付済み。チャット相談は「翌日中を目安に返信」と案内済み", next: "スタッフからの連絡を待つ", st: ["staff", "チャットはLINEで返信、電話は指定の時間帯に電話"] },
+  { w: "来店予約", why: "予約の案内を求めた", step: 5,
+    sent: "予約カレンダーの案内", next: "予約を申し込む", st: ["ok", "対応不要"] },
+  { w: "予約リクエスト", why: "予約カレンダーで申し込んだ", step: 5,
+    sent: "受付。定期配信は止まる", next: "承認を待つ", st: ["store", "当日中に承認"] },
+  { w: "上のどれでもない文章", why: "お客様が自分で書いて送った", step: 0,
+    sent: "9〜17時はなし。17時〜翌9時は一次返信", next: "返事を待つ", st: ["staff", "当日中に返信（17時以降は翌日中）"] }
 ];
 
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-var mapEl = document.getElementById("map");
-STAGES.forEach(function (s) {
-  var box = el("div", "stage"); box.id = s.id;
-  box.appendChild(el("span", "badge", "いまここ"));
-  box.appendChild(el("span", "no", s.no));
-  box.appendChild(el("h3", null, s.name));
-  box.appendChild(el("div", "auto-box", s.auto));
-  var kw = el("div", "kw");
-  WORDS.filter(function (w) { return w.stage === s.id; }).forEach(function (w) { kw.appendChild(el("span", null, w.w)); });
-  box.appendChild(kw);
-  box.appendChild(el("div", "act " + s.act[0], s.act[1]));
-  mapEl.appendChild(box);
+var flow = document.getElementById("flow");
+STEPS.forEach(function (s, i) {
+  var li = el("li");
+  li.appendChild(el("span", "dot", String(i + 1)));
+  li.appendChild(el("span", "name", s.name));
+  li.appendChild(el("span", "does", s.does));
+  li.appendChild(el("span", "st " + s.st[0], s.st[1]));
+  flow.appendChild(li);
 });
 
-var wordsEl = document.getElementById("words");
-var answerEl = document.getElementById("answer");
-var buttons = [];
+var list = document.getElementById("list");
 WORDS.forEach(function (w, i) {
-  var b = el("button", "word"); b.type = "button"; b.id = "w" + i;
-  var q = el("q", null, w.w); b.appendChild(q);
-  b.appendChild(el("span", "kind", w.kind));
-  b.appendChild(el("span", "pill " + w.need[0], w.need[1]));
-  b.addEventListener("click", function () { select(i); });
-  wordsEl.appendChild(b); buttons.push(b);
-});
+  var d = el("details", "item"); d.id = "w" + i;
+  if (i === 0) d.open = true;
+  var sm = el("summary");
+  var t = el("span", "w", "「" + w.w + "」");
+  t.appendChild(el("small", null, w.why));
+  sm.appendChild(t);
+  sm.appendChild(el("span", "st " + w.st[0], w.st[0] === "ok" ? w.st[1] : (w.st[0] === "store" ? "承認" : "対応する")));
+  sm.appendChild(el("span", "chev"));
+  d.appendChild(sm);
 
-function select(i) {
-  var w = WORDS[i];
-  buttons.forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
-  document.querySelectorAll(".stage, .lane").forEach(function (n) { n.classList.remove("here"); });
-  var stageName;
-  if (w.stage === "free") { document.getElementById("lane-free").classList.add("here"); stageName = "どの段階でも（自分で書いたメッセージ）"; }
-  else {
-    document.getElementById(w.stage).classList.add("here");
-    var s = STAGES.filter(function (x) { return x.id === w.stage; })[0];
-    stageName = s.no + "　" + s.name;
-  }
-  answerEl.innerHTML = "";
-  var top = el("div", "top");
-  var q = el("span", "q", "「" + w.w + "」"); top.appendChild(q);
-  top.appendChild(el("span", "pill " + w.need[0], w.need[1]));
-  answerEl.appendChild(top);
-  var dl = el("dl", "facts");
-  [["いまここ", stageName], ["LINEが自動で送ったもの", w.sent], ["お客様が次にすること", w.next]].forEach(function (f) {
-    var d = el("div"); d.appendChild(el("dt", null, f[0])); d.appendChild(el("dd", null, f[1])); dl.appendChild(d);
+  var box = el("div", "detail");
+  var where = el("div", "where");
+  where.appendChild(el("span", "label", "いまここ"));
+  var mini = el("div", "mini" + (w.step ? "" : " free"));
+  for (var k = 1; k <= 5; k++) mini.appendChild(el("span", k === w.step ? "on" : ""));
+  where.appendChild(mini);
+  where.appendChild(el("b", null, w.step ? ("段階 " + w.step + "／5　" + STEPS[w.step - 1].name) : "どの段階でも（お客様が自分で書いた文章）"));
+  box.appendChild(where);
+
+  var dl = el("dl", "rows");
+  [["LINEが送ったもの", w.sent], ["お客様が次にすること", w.next], ["スタッフの対応", w.st[1]]].forEach(function (r, j) {
+    var row = el("div");
+    row.appendChild(el("dt", null, r[0]));
+    var dd = el("dd");
+    if (j === 2) dd.appendChild(el("span", "st " + w.st[0], r[1])); else dd.textContent = r[1];
+    row.appendChild(dd); dl.appendChild(row);
   });
-  answerEl.appendChild(dl);
-}
-select(0);
+  box.appendChild(dl);
+  d.appendChild(box);
+  list.appendChild(d);
+});
 </script>
