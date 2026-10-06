@@ -103,6 +103,9 @@ section { display: grid; gap: 14px; }
 @media (max-width: 520px) { .always div { grid-template-columns: 1fr; } }
 .chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; }
 .chart pre.mermaid { margin: 0; min-width: 680px; background: transparent; text-align: center; }
+.chart .edgeLabel, .chart .edgeLabel p, .chart .edgeLabel span, .chart .edgeLabel div { color: #202124 !important; background-color: #FFFFFF !important; }
+.chart .edgeLabel rect, .chart .labelBkg { fill: #FFFFFF !important; background-color: #FFFFFF !important; }
+.chart .flowchart-link, .chart .edgePath path { stroke: #5F6368 !important; }
 .st.cust { color: var(--muted); }
 .foot { color: var(--muted); font-size: 0.88rem; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
@@ -145,6 +148,7 @@ section { display: grid; gap: 14px; }
   </div>
   <div class="chart">
 <pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'background': '#FFFFFF', 'textColor': '#202124', 'lineColor': '#5F6368', 'edgeLabelBackground': '#FFFFFF', 'primaryTextColor': '#202124', 'fontSize': '15px'}}}%%
 flowchart TD
   A([友だち追加]):::cust --> B[あいさつと4つのボタンを送る<br>90日間の定期配信を開始]:::auto
   B -->|合う車を知りたい| D1[おすすめ車診断]:::auto
