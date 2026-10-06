@@ -1,8 +1,8 @@
-"""Claude用の index.html から、外部に置ける版（share/index.html）を作る。
+"""Claude用の index.html から、外部に置ける版（docs/index.html）を作る。
 
 Claude の上ではフローチャートが自動で描かれるが、外部では描かれないため、
 描画用のライブラリ（mermaid）を読み込む行を足す。検索に出ないよう noindex も付ける。
-index.html を直したら、このファイルを実行して share/index.html を作り直す:
+index.html を直したら、このファイルを実行して docs/index.html を作り直す:
     python3 build_share.py
 """
 from pathlib import Path
@@ -26,7 +26,7 @@ html = (
     + "<script>mermaid.initialize({ startOnLoad: true });</script>\n"
     + "</body>\n</html>\n"
 )
-out = here / "share" / "index.html"
+out = here / "docs" / "index.html"
 out.parent.mkdir(exist_ok=True)
 out.write_text(html, encoding="utf-8")
 print("wrote", out)
