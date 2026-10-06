@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
 <style>
-/* Layout: 1カラムの読み物。上から「結論（スタッフの仕事）→ 早見表 → 流れ図 → 定期配信 → メニュー → 見直し候補 → 更新方法」 */
+/* Layout: 上に「通知で届いた言葉」のボタン一覧と答え、下に段階ごとの全体設計図。ボタンを押すと設計図の該当段階が「いまここ」になる */
 :root {
   --bg: #F6F7F5;
   --surface: #FFFFFF;
@@ -14,7 +14,7 @@
   --auto-bg: #E2F1EA;  --auto-fg: #1E5A43;  --auto-bd: #3F8F6B;
   --staff-bg: #FCEBD8; --staff-fg: #7A3E0C; --staff-bd: #C46A1C;
   --store-bg: #E1EAF6; --store-fg: #1D3E6B; --store-bd: #3D6CB0;
-  --diagram-bg: #FBFCFA;
+  --here: #D23F31;
   --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   --font-body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
 }
@@ -24,7 +24,7 @@
     --auto-bg: #1D3A2F; --auto-fg: #BFE8D3; --auto-bd: #4FA982;
     --staff-bg: #43301C; --staff-fg: #FFD9B0; --staff-bd: #D9893E;
     --store-bg: #1D2C44; --store-fg: #C9DBF6; --store-bd: #6B95D1;
-    --diagram-bg: #FBFCFA;
+    --here: #FF7A6B;
     color-scheme: dark;
   }
 }
@@ -33,137 +33,221 @@
   --auto-bg: #1D3A2F; --auto-fg: #BFE8D3; --auto-bd: #4FA982;
   --staff-bg: #43301C; --staff-fg: #FFD9B0; --staff-bd: #D9893E;
   --store-bg: #1D2C44; --store-fg: #C9DBF6; --store-bd: #6B95D1;
-  --diagram-bg: #FBFCFA;
+  --here: #FF7A6B;
   color-scheme: dark;
 }
 body {
   background: var(--bg); color: var(--ink);
-  font-family: var(--font-body); font-size: 17px; line-height: 1.75;
-  padding-inline: 16px; padding-block: 28px 56px;
+  font-family: var(--font-body); font-size: 17px; line-height: 1.7;
+  padding-inline: 16px; padding-block: 24px 56px;
 }
-.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 40px; }
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 36px; }
 h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
-h1 { font-size: 1.9rem; font-weight: 900; }
-h2 { font-size: 1.35rem; font-weight: 700; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
-h3 { font-size: 1.05rem; font-weight: 700; }
-p { margin: 0; max-width: 65ch; }
-section { display: grid; gap: 16px; }
-.meta { color: var(--muted); font-size: 0.95rem; }
-.lead { font-size: 1.05rem; }
+h1 { font-size: 1.8rem; font-weight: 900; }
+h2 { font-size: 1.3rem; font-weight: 700; }
+p { margin: 0; }
+section { display: grid; gap: 14px; }
+.sub { color: var(--muted); font-size: 0.95rem; }
 
-.legend { display: flex; flex-wrap: wrap; gap: 10px; }
-.chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; border: 1.5px solid; font-weight: 700; font-size: 0.95rem; }
-.chip.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.chip.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.chip.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 999px; border: 1.5px solid; font-weight: 700; font-size: 0.92rem; white-space: nowrap; }
+.pill.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
+.pill.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
+.pill.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
 
-.jobs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.job { background: var(--staff-bg); color: var(--staff-fg); border: 1.5px solid var(--staff-bd); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
-.job.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
-.job b { font-size: 1.05rem; }
-.job span { font-size: 0.95rem; }
+/* 通知で届いた言葉 */
+.words { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.word {
+  font: inherit; color: var(--ink); text-align: left; cursor: pointer;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; display: grid; gap: 8px; min-width: 0;
+}
+.word:hover { border-color: var(--accent); }
+.word[aria-pressed="true"] { border-color: var(--here); box-shadow: 0 0 0 2px var(--here) inset; }
+.word q { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; quotes: "「" "」"; overflow-wrap: anywhere; }
+.word .kind { font-size: 0.85rem; color: var(--muted); }
 
-.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-table { border-collapse: collapse; width: 100%; min-width: 640px; }
-th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-th { font-family: var(--font-display); font-size: 0.95rem; color: var(--muted); background: var(--bg); }
-tr:last-child td { border-bottom: none; }
-td.need { white-space: nowrap; }
-.tag { display: inline-block; padding: 2px 10px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; border: 1.5px solid; }
-.tag.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.tag.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.tag.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
-.small { font-size: 0.9rem; color: var(--muted); }
+.answer { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; }
+.answer .top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.answer .q { font-family: var(--font-display); font-weight: 900; font-size: 1.25rem; overflow-wrap: anywhere; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0; }
+.facts div { background: var(--bg); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+.facts dt { font-size: 0.82rem; color: var(--muted); font-weight: 700; letter-spacing: 0.04em; }
+.facts dd { margin: 2px 0 0; }
 
-.diagram { background: var(--diagram-bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px; overflow-x: auto; }
-.diagram pre.mermaid { margin: 0; min-width: 760px; background: transparent; }
+/* 全体設計図 */
+.map { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+@media (max-width: 860px) { .map { grid-template-columns: 1fr; } }
+.stage { position: relative; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.stage .no { font-family: var(--font-display); font-weight: 900; color: var(--accent); font-size: 0.9rem; letter-spacing: 0.06em; }
+.stage h3 { font-size: 1.08rem; }
+.stage .auto-box { background: var(--auto-bg); color: var(--auto-fg); border-radius: 8px; padding: 8px 10px; font-size: 0.93rem; }
+.stage .act { border-radius: 8px; padding: 8px 10px; font-size: 0.93rem; font-weight: 700; border: 1.5px solid; }
+.stage .act.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
+.stage .act.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
+.stage .act.store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
+.stage .kw { display: flex; flex-wrap: wrap; gap: 6px; }
+.stage .kw span { font-size: 0.85rem; border: 1px solid var(--line); border-radius: 6px; padding: 1px 8px; background: var(--bg); }
+.stage.here { border-color: var(--here); box-shadow: 0 0 0 2px var(--here) inset; }
+.stage .badge { display: none; position: absolute; top: -12px; right: 12px; background: var(--here); color: #FFFFFF; font-weight: 700; font-size: 0.85rem; padding: 2px 10px; border-radius: 999px; }
+.stage.here .badge { display: inline-block; }
+.arrow { display: none; }
 
-.timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
-.step { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
-.step .when { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-.step .what { font-size: 0.95rem; }
+.lanes { display: grid; gap: 10px; }
+.lane { border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border: 1.5px solid; }
+.lane.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
+.lane.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
+.lane.here { box-shadow: 0 0 0 3px var(--here); }
+.lane b { font-family: var(--font-display); }
 
-.menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-@media (max-width: 560px) { .menu { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.tile { background: var(--surface); border: 1.5px solid var(--auto-bd); border-radius: 8px; padding: 12px; display: grid; gap: 4px; min-width: 0; }
-.tile.warn { border-color: var(--staff-bd); background: var(--staff-bg); color: var(--staff-fg); }
-.tile b { font-size: 1rem; }
-.tile span { font-size: 0.9rem; }
-
-.notes { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; }
-.notes li { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; display: grid; gap: 4px; }
-.notes li b { font-family: var(--font-display); }
-code { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.88em; background: var(--bg); padding: 1px 6px; border-radius: 4px; overflow-wrap: anywhere; }
-a { color: var(--accent); }
+.who { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.who div { border: 1.5px solid; border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; min-width: 0; }
+.who .staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
+.who .store { background: var(--store-bg); color: var(--store-fg); border-color: var(--store-bd); }
+.who b { font-family: var(--font-display); }
+.who span { font-size: 0.93rem; }
+.foot { color: var(--muted); font-size: 0.9rem; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-
-.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-.col { border: 1.5px solid; border-radius: 10px; padding: 16px 18px; display: grid; gap: 8px; min-width: 0; }
-.col.auto  { background: var(--auto-bg);  color: var(--auto-fg);  border-color: var(--auto-bd); }
-.col.staff { background: var(--staff-bg); color: var(--staff-fg); border-color: var(--staff-bd); }
-.col ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { .stage, .word, .lane { transition: box-shadow .15s, border-color .15s; } }
 </style>
 
 <div class="wrap">
 
-<header style="display:grid;gap:14px">
+<header style="display:grid;gap:12px">
   <h1>フラット7 LINE導線マップ</h1>
-  <p class="lead">公式LINEは、ほとんどの返事をLINEが自動で送っています。スタッフが動くのは、下の橙と青の場面だけです。</p>
-  <div class="legend" role="list">
-    <span class="chip auto" role="listitem">緑 ＝ LINEが自動で返す（対応不要）</span>
-    <span class="chip staff" role="listitem">橙 ＝ スタッフが返信・電話する</span>
-    <span class="chip store" role="listitem">青 ＝ 店舗が予約を承認する</span>
+  <p>通知で届いた言葉を押すと、そのお客様が下の設計図の<b>どこにいるか</b>と、<b>対応が要るか</b>が分かります。</p>
+  <div class="legend">
+    <span class="pill auto">対応不要（LINEが自動で返信済み）</span>
+    <span class="pill staff">スタッフが返信・電話</span>
+    <span class="pill store">店舗が予約を承認</span>
   </div>
 </header>
 
-<section aria-labelledby="s-flow">
-  <h2 id="s-flow">お客様の動きとスタッフの出番</h2>
-  <div class="diagram" role="img" aria-label="お客様の動きとスタッフの出番の流れ図">
-<pre class="mermaid">
-flowchart TD
-  A([友だち追加]):::cust --> B[あいさつと診断ツールの案内<br>90日間の定期配信]:::auto
-  B --> C1[診断・料金を見る]:::cust --> D1[結果や案内を自動で返す]:::auto
-  B --> C2[相談したい]:::cust
-  C2 -->|チャット| S1[[届いた質問に返信]]:::staff
-  C2 -->|電話| S2[[お客様に電話]]:::staff
-  B --> C3[来店予約]:::cust --> S3[[予約を承認]]:::store --> V([来店]):::store
-  B --> C4[自由にメッセージを書く]:::cust --> S4[[返信する]]:::staff
-  D1 --> C2
-  D1 --> C3
-  classDef cust fill:#EFEFEA,stroke:#8A8E86,color:#2B2E2A
-  classDef auto fill:#E2F1EA,stroke:#3F8F6B,color:#1E5A43
-  classDef staff fill:#FCEBD8,stroke:#C46A1C,color:#7A3E0C,stroke-width:2px
-  classDef store fill:#E1EAF6,stroke:#3D6CB0,color:#1D3E6B,stroke-width:2px
-</pre>
+<section aria-labelledby="s-words">
+  <h2 id="s-words">通知で届いた言葉は？</h2>
+  <div class="words" id="words" role="group" aria-label="通知で届いた言葉"></div>
+  <div class="answer" id="answer" aria-live="polite"></div>
+</section>
+
+<section aria-labelledby="s-map">
+  <h2 id="s-map">全体設計図</h2>
+  <p class="sub">左から右へ進みます。四角の中の言葉は、その段階で通知に出てくる言葉です。</p>
+  <div class="map" id="map"></div>
+  <div class="lanes">
+    <div class="lane auto" id="lane-step"><b>どの段階でも</b><span>友だち追加から90日間、決まった日の17時に案内を自動配信（来店予約をした人には止まる）</span><span class="pill auto">対応不要</span></div>
+    <div class="lane staff" id="lane-free"><b>どの段階でも</b><span>お客様が自分で文章を書いて送ってきたとき（17時〜翌9時は一次返信を自動で送信済み）</span><span class="pill staff">返信する</span></div>
   </div>
 </section>
 
-<section aria-labelledby="s-split">
-  <h2 id="s-split">返信が要る？要らない？</h2>
-  <div class="split">
-    <div class="col auto">
-      <h3>返信しなくてよい（LINEが自動で送る）</h3>
-      <ul>
-        <li>友だち追加のあいさつ</li>
-        <li>90日間の定期配信</li>
-        <li>診断の結果・料金の案内</li>
-        <li>「店舗情報」を押したときの案内</li>
-        <li>17時以降に届いたメッセージへの一次返信</li>
-      </ul>
-    </div>
-    <div class="col staff">
-      <h3>スタッフが対応する</h3>
-      <ul>
-        <li>お客様が自分で書いた質問 → <b>当日中に返信</b>（17時以降に届いたものは翌日中）</li>
-        <li>チャット相談フォーム → <b>LINEで返信</b>（翌日中）</li>
-        <li>電話相談フォーム → <b>お客様に電話</b></li>
-        <li>来店予約のリクエスト → <b>当日中に承認</b></li>
-      </ul>
-    </div>
+<section aria-labelledby="s-who">
+  <h2 id="s-who">スタッフの出番はこの4つだけ</h2>
+  <div class="who">
+    <div class="staff"><b>自分で書いた質問</b><span>当日中に返信（17時以降は翌日中）</span></div>
+    <div class="staff"><b>チャット相談フォーム</b><span>LINEで返信（翌日中）</span></div>
+    <div class="staff"><b>電話相談フォーム</b><span>お客様に電話</span></div>
+    <div class="store"><b>来店予約のリクエスト</b><span>当日中に承認</span></div>
   </div>
-  <p class="small">返信が必要なメッセージは、Lステップの「トーク一覧」で「未対応」と表示されます。</p>
 </section>
 
-<p class="meta">2026年10月6日のLステップ・LINE公式アカウントの設定をもとに作成。設定を変えたときは、この図も更新します。</p>
+<p class="foot">2026年10月6日のLステップ・LINE公式アカウントの設定をもとに作成。設定を変えたときは、この図も更新します。</p>
 
 </div>
+
+<script>
+/* 段階（全体設計図） */
+var STAGES = [
+  { id: "s1", no: "STEP 1", name: "友だち追加",
+    auto: "あいさつと4つのボタン（合う車・月々いくら・買い方・スタッフに相談）を自動で送る",
+    act: ["auto", "対応不要"] },
+  { id: "s2", no: "STEP 2", name: "情報を見ている",
+    auto: "車の持ち方診断・店舗情報などの案内を自動で返す",
+    act: ["auto", "対応不要"] },
+  { id: "s3", no: "STEP 3", name: "診断・料金を調べている",
+    auto: "診断結果の車の案内と月額、「来店予約する／チャットで質問」のボタンを自動で返す",
+    act: ["auto", "対応不要"] },
+  { id: "s4", no: "STEP 4", name: "相談しようとしている",
+    auto: "チャットか電話かを選んでもらう。選ぶと、質問の受付やフォームを自動で返す",
+    act: ["staff", "質問・フォームが届いたら対応"] },
+  { id: "s5", no: "STEP 5", name: "来店予約",
+    auto: "予約カレンダーで申し込みを受け付け、90日間の配信を止める",
+    act: ["store", "リクエストを承認"] }
+];
+
+/* 通知で届いた言葉 → 現在地と対応 */
+var WORDS = [
+  { w: "詳しく聞いてみたいです", stage: "s2", kind: "あいさつの比較画像を押した",
+    sent: "車の持ち方診断の案内", next: "診断を受ける・ボタンを押す", need: ["auto", "対応不要"] },
+  { w: "店舗情報", stage: "s2", kind: "メニューを押した",
+    sent: "3店舗の案内カード（住所など）", next: "来店・電話を検討", need: ["auto", "対応不要"] },
+  { w: "診断結果：タント など", stage: "s3", kind: "おすすめ車診断の結果を送った",
+    sent: "その車の案内と月額、来店予約・チャット質問のボタン", next: "来店予約か、チャットで質問", need: ["auto", "対応不要"] },
+  { w: "スタッフに相談したい", stage: "s4", kind: "あいさつのボタンを押した",
+    sent: "「チャットで質問する／電話で相談する」の選択", next: "どちらかを選ぶ", need: ["auto", "まだ対応不要"] },
+  { w: "チャットで質問する", stage: "s4", kind: "相談方法でチャットを選んだ",
+    sent: "「どういったお悩みでしょうか？」", next: "質問を書いて送ってくる", need: ["staff", "次に届く質問に返信"] },
+  { w: "チャットで質問", stage: "s4", kind: "診断結果のボタンを押した",
+    sent: "「このまま質問を送ってください」", next: "質問を書いて送ってくる", need: ["staff", "次に届く質問に返信"] },
+  { w: "電話で相談する", stage: "s4", kind: "相談方法で電話を選んだ",
+    sent: "電話相談フォーム", next: "フォームを送ってくる", need: ["staff", "フォームが届いたら電話"] },
+  { w: "相談フォームの回答", stage: "s4", kind: "チャット相談・電話相談フォームを送った",
+    sent: "受付済み（返信の目安を案内済み）", next: "スタッフの連絡を待っている", need: ["staff", "LINEで返信 or 電話"] },
+  { w: "来店予約", stage: "s5", kind: "予約の案内を求めた",
+    sent: "予約カレンダーの案内", next: "予約を申し込む", need: ["auto", "対応不要"] },
+  { w: "予約リクエスト", stage: "s5", kind: "予約カレンダーで申し込んだ",
+    sent: "受付（90日間の配信を停止）", next: "承認を待っている", need: ["store", "当日中に承認"] },
+  { w: "上のどれでもない文章", stage: "free", kind: "お客様が自分で書いた",
+    sent: "9〜17時：なし／17時〜翌9時：一次返信", next: "返事を待っている", need: ["staff", "当日中に返信（17時以降は翌日中）"] }
+];
+
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+var mapEl = document.getElementById("map");
+STAGES.forEach(function (s) {
+  var box = el("div", "stage"); box.id = s.id;
+  box.appendChild(el("span", "badge", "いまここ"));
+  box.appendChild(el("span", "no", s.no));
+  box.appendChild(el("h3", null, s.name));
+  box.appendChild(el("div", "auto-box", s.auto));
+  var kw = el("div", "kw");
+  WORDS.filter(function (w) { return w.stage === s.id; }).forEach(function (w) { kw.appendChild(el("span", null, w.w)); });
+  box.appendChild(kw);
+  box.appendChild(el("div", "act " + s.act[0], s.act[1]));
+  mapEl.appendChild(box);
+});
+
+var wordsEl = document.getElementById("words");
+var answerEl = document.getElementById("answer");
+var buttons = [];
+WORDS.forEach(function (w, i) {
+  var b = el("button", "word"); b.type = "button"; b.id = "w" + i;
+  var q = el("q", null, w.w); b.appendChild(q);
+  b.appendChild(el("span", "kind", w.kind));
+  b.appendChild(el("span", "pill " + w.need[0], w.need[1]));
+  b.addEventListener("click", function () { select(i); });
+  wordsEl.appendChild(b); buttons.push(b);
+});
+
+function select(i) {
+  var w = WORDS[i];
+  buttons.forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+  document.querySelectorAll(".stage, .lane").forEach(function (n) { n.classList.remove("here"); });
+  var stageName;
+  if (w.stage === "free") { document.getElementById("lane-free").classList.add("here"); stageName = "どの段階でも（自分で書いたメッセージ）"; }
+  else {
+    document.getElementById(w.stage).classList.add("here");
+    var s = STAGES.filter(function (x) { return x.id === w.stage; })[0];
+    stageName = s.no + "　" + s.name;
+  }
+  answerEl.innerHTML = "";
+  var top = el("div", "top");
+  var q = el("span", "q", "「" + w.w + "」"); top.appendChild(q);
+  top.appendChild(el("span", "pill " + w.need[0], w.need[1]));
+  answerEl.appendChild(top);
+  var dl = el("dl", "facts");
+  [["いまここ", stageName], ["LINEが自動で送ったもの", w.sent], ["お客様が次にすること", w.next]].forEach(function (f) {
+    var d = el("div"); d.appendChild(el("dt", null, f[0])); d.appendChild(el("dd", null, f[1])); dl.appendChild(d);
+  });
+  answerEl.appendChild(dl);
+}
+select(0);
+</script>
