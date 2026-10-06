@@ -101,8 +101,9 @@ section { display: grid; gap: 14px; }
 .always span.s { font-size: 0.9rem; color: var(--muted); }
 .always .st { white-space: normal; }
 @media (max-width: 520px) { .always div { grid-template-columns: 1fr; } }
-.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; }
-.chart pre.mermaid { margin: 0; min-width: 680px; background: transparent; text-align: center; }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow: hidden; }
+.chart pre.mermaid { margin: 0; background: transparent; text-align: center; }
+.chart svg { width: 100% !important; max-width: 100% !important; height: auto !important; }
 .chart .edgeLabel, .chart .edgeLabel p, .chart .edgeLabel span, .chart .edgeLabel div { color: #202124 !important; background-color: #FFFFFF !important; }
 .chart .edgeLabel rect, .chart .labelBkg { fill: #FFFFFF !important; background-color: #FFFFFF !important; }
 .chart .flowchart-link, .chart .edgePath path { stroke: #5F6368 !important; }
@@ -139,7 +140,7 @@ section { display: grid; gap: 14px; }
 
 <section aria-labelledby="s-chart">
   <h2 id="s-chart">フローチャート</h2>
-  <p class="lead">線の上の言葉は、お客様が押したボタンです。四角の色で、スタッフの出番が分かります。</p>
+  <p class="lead">線の上の言葉は、お客様が押したボタンです。四角の色で、スタッフの出番が分かります。スマホでは2本の指で広げると拡大できます。</p>
   <div class="legend">
     <span class="st ok">LINEが自動で対応</span>
     <span class="st staff">スタッフが返信・電話</span>
@@ -148,7 +149,7 @@ section { display: grid; gap: 14px; }
   </div>
   <div class="chart">
 <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'background': '#FFFFFF', 'textColor': '#202124', 'lineColor': '#5F6368', 'edgeLabelBackground': '#FFFFFF', 'primaryTextColor': '#202124', 'fontSize': '16px'}, 'flowchart': {'useMaxWidth': false}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'background': '#FFFFFF', 'textColor': '#202124', 'lineColor': '#5F6368', 'edgeLabelBackground': '#FFFFFF', 'primaryTextColor': '#202124', 'fontSize': '16px'}, 'flowchart': {'useMaxWidth': true}}}%%
 flowchart TD
   A([友だち追加]):::cust --> B[あいさつと4つのボタンを送る<br>90日間の定期配信を開始]:::auto
   B -->|合う車を知りたい| D1[おすすめ車診断]:::auto
@@ -192,7 +193,7 @@ var STEPS = [
 
 /* step: 1〜5、0 は「どの段階でも」 */
 var WORDS = [
-  { w: "詳しく聞いてみたいです", why: "あいさつの比較画像を押した", step: 2,
+  { w: "内容を詳しく知る", why: "あいさつの比較画像を押した（10/6より前に友だち追加した人は「詳しく聞いてみたいです」）", step: 2,
     sent: "車の持ち方診断の案内", next: "診断を受ける", st: ["ok", "対応不要"] },
   { w: "店舗情報", why: "メニューの「店舗情報」を押した", step: 2,
     sent: "3店舗の案内カード", next: "来店や電話を考える", st: ["ok", "対応不要"] },
