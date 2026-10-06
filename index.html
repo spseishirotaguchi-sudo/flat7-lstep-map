@@ -2,34 +2,25 @@
 <title>フラット7 LINE導線マップ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <style>
 /* Layout: 1カラム。①通知の言葉（開くと現在地と対応）②全体の流れ（5段階の横並び＋どの段階でもの2行）。色は状態を示す点と文字だけに使う */
+/* 白地に統一（ダークモードでも白のまま）。文字は濃いグレー、構造は紺、状態だけ緑・橙・青 */
 :root {
-  --bg: #F5F6F4;
+  --bg: #FFFFFF;
+  --soft: #F6F7F9;
   --surface: #FFFFFF;
-  --ink: #1F2726;
-  --muted: #66716F;
-  --line: #E1E5E2;
-  --accent: #23695E;
-  --ok: #2F8A5F;
-  --staff: #C2621B;
-  --store: #3563A8;
-  --track: #DCE2DF;
-  --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --ink: #202124;
+  --muted: #5F6368;
+  --line: #DADCE0;
+  --accent: #1F3A5F;
+  --ok: #188038;
+  --staff: #C5590A;
+  --store: #1A5DC8;
+  --track: #E3E6EA;
+  --font-display: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
   --font-body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #151B1A; --surface: #1D2524; --ink: #E7EDEB; --muted: #A0ADAA; --line: #2F3A38; --accent: #74C7B5;
-    --ok: #5CC28F; --staff: #F0A055; --store: #7FA6E6; --track: #33403D;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #151B1A; --surface: #1D2524; --ink: #E7EDEB; --muted: #A0ADAA; --line: #2F3A38; --accent: #74C7B5;
-  --ok: #5CC28F; --staff: #F0A055; --store: #7FA6E6; --track: #33403D;
-  color-scheme: dark;
+  color-scheme: light;
 }
 body {
   background: var(--bg); color: var(--ink);
@@ -38,8 +29,8 @@ body {
 }
 .wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 44px; }
 h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
-h1 { font-size: 1.75rem; font-weight: 900; }
-h2 { font-size: 1.2rem; font-weight: 700; }
+h1 { font-size: 1.7rem; font-weight: 700; color: var(--accent); }
+h2 { font-size: 1.2rem; font-weight: 700; color: var(--accent); padding-left: 10px; border-left: 4px solid var(--accent); }
 p { margin: 0; }
 section { display: grid; gap: 14px; }
 .lead { color: var(--muted); }
@@ -62,13 +53,13 @@ section { display: grid; gap: 14px; }
   padding: 14px 18px;
 }
 .item summary::-webkit-details-marker { display: none; }
-.item summary:hover { background: var(--bg); }
-.item .w { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; min-width: 0; overflow-wrap: anywhere; }
+.item summary:hover { background: var(--soft); }
+.item .w { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
 .item .w small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.85rem; color: var(--muted); }
 .chev { width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); justify-self: center; margin-top: -4px; }
 .item[open] .chev { transform: rotate(-135deg); margin-top: 4px; }
-.item[open] summary { background: var(--bg); }
-.detail { padding: 4px 18px 18px; display: grid; gap: 14px; background: var(--bg); }
+.item[open] summary { background: var(--soft); }
+.detail { padding: 4px 18px 18px; display: grid; gap: 14px; background: var(--soft); }
 
 .where { display: grid; gap: 6px; }
 .where .label { font-size: 0.85rem; color: var(--muted); }
@@ -90,7 +81,7 @@ section { display: grid; gap: 14px; }
 .flow li::before { content: ""; position: absolute; top: 17px; left: 0; right: 0; height: 2px; background: var(--track); z-index: 0; }
 .flow li:first-child::before { left: 50%; }
 .flow li:last-child::before { right: 50%; }
-.flow .dot { position: relative; z-index: 1; justify-self: center; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-weight: 900; font-variant-numeric: tabular-nums; }
+.flow .dot { position: relative; z-index: 1; justify-self: center; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); border: 2px solid var(--accent); color: #FFFFFF; font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
 .flow .name { font-family: var(--font-display); font-weight: 700; line-height: 1.4; }
 .flow .does { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
 .flow .st { justify-self: center; font-size: 0.88rem; white-space: normal; text-align: left; }
@@ -110,6 +101,9 @@ section { display: grid; gap: 14px; }
 .always span.s { font-size: 0.9rem; color: var(--muted); }
 .always .st { white-space: normal; }
 @media (max-width: 520px) { .always div { grid-template-columns: 1fr; } }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; }
+.chart pre.mermaid { margin: 0; min-width: 680px; background: transparent; text-align: center; }
+.st.cust { color: var(--muted); }
 .foot { color: var(--muted); font-size: 0.88rem; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 </style>
@@ -137,6 +131,45 @@ section { display: grid; gap: 14px; }
   <div class="always">
     <div><p><b>どの段階でも：定期配信</b><span class="s">友だち追加から90日間、決まった日の17時に自動配信。来店予約をした人には止まる。</span></p><span class="st ok">対応不要</span></div>
     <div><p><b>どの段階でも：お客様が自分で書いた文章</b><span class="s">定期配信でも「このトークに送ってください」と案内しているため届く。17時〜翌9時は一次返信を自動で送信済み。</span></p><span class="st staff">当日中に返信（17時以降は翌日中）</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="s-chart">
+  <h2 id="s-chart">フローチャート</h2>
+  <p class="lead">線の上の言葉は、お客様が押したボタンです。四角の色で、スタッフの出番が分かります。</p>
+  <div class="legend">
+    <span class="st ok">LINEが自動で対応</span>
+    <span class="st staff">スタッフが返信・電話</span>
+    <span class="st store">店舗が予約を承認</span>
+    <span class="st cust">お客様の操作</span>
+  </div>
+  <div class="chart">
+<pre class="mermaid">
+flowchart TD
+  A([友だち追加]):::cust --> B[あいさつと4つのボタンを送る<br>90日間の定期配信を開始]:::auto
+  B -->|合う車を知りたい| D1[おすすめ車診断]:::auto
+  B -->|月々いくらか知りたい| D2[料金シミュレーション]:::auto
+  B -->|買い方で迷っている| D3[車の持ち方診断]:::auto
+  B -->|比較画像を押す| D3
+  B -->|スタッフに相談したい| C[チャットか電話かを聞く]:::auto
+  D1 -->|結果をトークに送る| E[車の案内と月額を返す]:::auto
+  E -->|チャットで質問| Q[質問を送ってくださいと返す]:::auto
+  C -->|チャット| Q
+  Q --> S1[[届いた質問に返信]]:::staff
+  D3 -->|チャットで相談| G[チャット相談フォーム]:::auto --> S1
+  C -->|電話| F[電話相談フォーム]:::auto
+  D3 -->|電話で相談| F
+  F --> S2[[お客様に電話]]:::staff
+  E -->|来店予約する| R[予約リクエストを受付<br>定期配信を停止]:::auto
+  D2 -->|来店予約| R
+  D3 -->|来店して相談| R
+  R --> S3[[予約を承認]]:::store --> V([来店]):::store
+  M([お客様が自分で文章を書く]):::cust --> S4[[返信する<br>17時以降は翌日中]]:::staff
+  classDef cust fill:#F1F3F4,stroke:#9AA0A6,color:#202124
+  classDef auto fill:#E6F4EA,stroke:#188038,color:#0D5228
+  classDef staff fill:#FDEBDD,stroke:#C5590A,color:#7A3505,stroke-width:2px
+  classDef store fill:#E3EDFB,stroke:#1A5DC8,color:#0F3B82,stroke-width:2px
+</pre>
   </div>
 </section>
 
